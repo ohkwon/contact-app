@@ -4,13 +4,15 @@
     <th>Last Name</th>
     <th>Email Address</th>
     <th>Phone Number</th>
+    <th>Update Time</th>
   </tr>
   <% @contact_list.each do |contact| %>
     <tr>
       <td><%= contact.first_name %></td>
       <td><%= contact.last_name %></td>
       <td><%= contact.email %></td>
-      <td><%= contact.phone_number %></td>
+      <td><%= contact.japan_phone %></td>
+      <td><%= contact.friendly_time %></td>
     </tr>
   <% end %>
 </table>
