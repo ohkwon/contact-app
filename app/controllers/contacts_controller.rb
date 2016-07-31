@@ -5,7 +5,11 @@ class ContactsController < ApplicationController
   end
 
   def index
-    @contact_list = Contact.all
+    if params[:search]
+      @contact_list = Contact.where("first_name ILIKE ? OR middle_name ILIKE ? OR last_name ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    else
+      @contact_list = Contact.all
+    end
   end
 
   def phone_index
