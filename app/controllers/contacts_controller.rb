@@ -5,27 +5,47 @@ class ContactsController < ApplicationController
   end
 
   def index
-    if params[:search]
-      @contact_list = Contact.where("first_name ILIKE ? OR middle_name ILIKE ? OR last_name ILIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    if current_user
+      @contact_list = Contact.where(user_id: current_user.id)
     else
-      @contact_list = Contact.all
+      redirect_to "/login"
     end
   end
 
-  def phone_index
-    @contact_list = Contact.all
-  end
+  # def phone_index
+  #   @contact_list = Contact.all
+  # end
 
   def show
-    @contact = Contact.find_by(id: params[:id])
+    if current_user.id == Contact.find_by(id: params[:id]).user_id
+      @contact = Contact.find_by(id: params[:id])
+    else
+      redirect_to "/"
+    end
   end
 
   def new
-
+    if current_user == nil
+      redirect_to "/login"
+    end
   end
 
   def create
-    @id = params[:id]
+    contact = Contact.new({
+      first_name: params[:first_name],
+      middle_name: params[:middle_name],
+      last_name: params[:last_name],
+      email: params[:email],
+      phone_number: params[:phone_number],
+      bio: params[:bio],
+      user_id: params[:user_id]})
+    if contact.save
+      flash[:success] = "Contact successfully created!"
+      redirect_to "/contacts/#{contact.id}"
+    else
+      flash[:danger] = "Invalid Contact"
+      redirect_to "/contacts/new?user_id=#{params[:user_id]}"
+    end
   end
 
 end
